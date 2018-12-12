@@ -38,4 +38,5 @@ while True:
     # Меняем ts для следующего запроса
     ts = long_poll['ts']
 
-
+useless = ''
+#this is useless thing
