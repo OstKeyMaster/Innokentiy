@@ -20,7 +20,6 @@ vk_bot = vk_api.VkApi(token=TOKEN)
 long_poll = vk_bot.method('messages.getLongPollServer', {'need_pts': 1, 'lp_version': 3})
 server, key, ts = long_poll['server'], long_poll['key'], long_poll["ts"]
 print("готов к работе" + str(long_poll))
-# ) ^
 
 
 while True:
@@ -36,11 +35,14 @@ while True:
         if 'Кто ты?' in update[0][6]:
             group_info = vk_bot.method('groups.getById', {'group_id': GROUP_ID, 'fields': 'name'})
             write_msg(user_id, 'Я - ' + group_info[0]['name'] + ', твой друг и товарищ))')
-        elif 'Кинь фотку' in update[0][6]:
+        elif 'фотку' in update[0][6]:
             write_msg_attach(user_id, 'Лови', 'photo358546480_456240994')
         else:
             user_name = vk_bot.method('users.get', {'user_ids': user_id})
-            write_msg(user_id, 'Привет, ' + (user_name[0]['first_name']))
+            if 'Чуитс' in update[0][6]:
+                write_msg(user_id, 'Чуитс, ' + (user_name[0]['first_name']))
+            elif 'Привет' in update[0][6]:
+                write_msg(user_id, 'Привет, ' + (user_name[0]['first_name']))
             print(str(user_name[0]['first_name']) + ' ' +
                 str(user_name[0]['last_name']) + ' написал(а) боту - ' + str(update[0][6]))  # msg for us
 
