@@ -8,6 +8,11 @@ from config import *
 def write_msg(user_id, text):
     vk_bot.method('messages.send', {'user_id': user_id, 'message': text, 'random_id': random.randint(0, 1000)})
 
+def write_msg_attach(user_id, text, att_url):
+    vk_bot.method('messages.send', {'user_id' :user_id,
+                                    'attachment' : att_url,
+                                    'message' : text,
+                                    'random_id' : random.randint(0, 1000)})
 
 vk_bot = vk_api.VkApi(token=TOKEN)
 long_poll = vk_bot.method('messages.getLongPollServer', {'need_pts': 1, 'lp_version': 3})
@@ -25,10 +30,9 @@ while True:
     if update[0][0] == 4:
         print(update)
         user_id = update[0][3]
-        if (update[0][6] == 'Кто ты?') or (update[0][6] == 'Кто ты') or (update[0][6] == 'кто ты?') or (update[0][6] == 'кто ты'):
-            #group_info = vk_bot.method('groups.getByld', {'group_id' : GROUP_ID, 'fields' : 'description'})
-            #print(group_info)
-            write_msg(user_id, 'Я - ' + 'Бот Иннокентий.')
+        if (update[0][6] == 'Кто ты?') or (update[0][6] == 'Кто ты'):
+            group_info = vk_bot.method('groups.getById', {'group_id': GROUP_ID, 'fields': 'name'})
+            write_msg(user_id, 'Я - ' + group_info[0]['name'])
         else:
             user_name = vk_bot.method('users.get', {'user_ids': user_id})
             write_msg(user_id, 'Привет, ' + (user_name[0]['first_name']))
@@ -37,6 +41,3 @@ while True:
 
     # Меняем ts для следующего запроса
     ts = long_poll['ts']
-
-useless = ''
-#this is useless thing
