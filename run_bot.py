@@ -32,9 +32,12 @@ while True:
     if update[0][0] == 4:
         print(update)
         user_id = update[0][3]
-        if (update[0][6] == 'Кто ты?') or (update[0][6] == 'Кто ты'):
+
+        if 'Кто ты?' in update[0][6]:
             group_info = vk_bot.method('groups.getById', {'group_id': GROUP_ID, 'fields': 'name'})
-            write_msg(user_id, 'Я - ' + group_info[0]['name'])
+            write_msg(user_id, 'Я - ' + group_info[0]['name'] + ', твой друг и товарищ))')
+        elif 'Кинь фотку' in update[0][6]:
+            write_msg_attach(user_id, 'Лови', 'photo358546480_456240994')
         else:
             user_name = vk_bot.method('users.get', {'user_ids': user_id})
             write_msg(user_id, 'Привет, ' + (user_name[0]['first_name']))
