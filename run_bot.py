@@ -24,7 +24,9 @@ print("готов к работе" + str(long_poll))
 
 while True:
     long_poll = requests.get(
-        'https://{server}?act={act}&key={key}&ts={ts}&wait=500'.format(server=server, act='a_check', key=key,
+        'https://{server}?act={act}&key={key}&ts={ts}&wait=500'.format(server=server,
+                                                                       act='a_check',
+                                                                       key=key,
                                                                        ts=ts)).json()
 
     update = long_poll['updates']
@@ -32,7 +34,7 @@ while True:
         print(update)
         user_id = update[0][3]
 
-        if 'Кто ты?' in update[0][6]:
+        if 'Кто ты' in update[0][6] or 'Ты кто' in update[0][6]:
             group_info = vk_bot.method('groups.getById', {'group_id': GROUP_ID, 'fields': 'name'})
             write_msg(user_id, 'Я - ' + group_info[0]['name'] + ', твой друг и товарищ))')
         elif 'фотку' in update[0][6]:
