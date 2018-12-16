@@ -15,6 +15,10 @@ def write_msg_attach(user_id, text, att_url):
                                     'message': text,
                                     'random_id': random.randint(0, 1000)})
 
+def mark_read(user_id):
+    st_mes = update[0][1]
+    vk_bot.method('messages.markAsRead', {'peer_id': user_id,
+                                          'start_message_id': st_mes})
 
 vk_bot = vk_api.VkApi(token=TOKEN)
 long_poll = vk_bot.method('messages.getLongPollServer', {'need_pts': 1, 'lp_version': 3})
@@ -48,5 +52,9 @@ while True:
             print(str(user_name[0]['first_name']) + ' ' +
                 str(user_name[0]['last_name']) + ' написал(а) боту - ' + str(update[0][6]))  # msg for us
 
+        if 'Хочу' in update[0][6] and ('оригами' in update[0][6]):
+            write_msg(user_id, 'ок')
+
+        mark_read(user_id)
     # Меняем ts для следующего запроса
     ts = long_poll['ts']
