@@ -3,7 +3,7 @@ import random
 import requests
 import vk_api
 from config import *
-
+from origami import *
 
 def write_msg(user_id, text):
     vk_bot.method('messages.send', {'user_id': user_id, 'message': text, 'random_id': random.randint(0, 1000)})
@@ -42,7 +42,13 @@ while True:
             group_info = vk_bot.method('groups.getById', {'group_id': GROUP_ID, 'fields': 'name'})
             write_msg(user_id, 'Я - ' + group_info[0]['name'] + ', твой друг и товарищ))')
         elif 'фотку' in update[0][6]:
-            write_msg_attach(user_id, 'Лови', 'photo358546480_456240994')
+            write_msg_attach(user_id, 'Лови', 'photo358546480_456240994')       #some features
+        elif 'Хочу' in update[0][6] and 'оригами' in update[0][6]:
+            write_msg(user_id, CATEG_LIST)
+        elif 'амолет' in update[0][6] or '1' in update[0][6]:       #PLANES
+            write_msg(user_id, PLANE_LIST)
+            #send pics from album
+
         else:
             user_name = vk_bot.method('users.get', {'user_ids': user_id})
             if 'Чуитс' in update[0][6]:
@@ -50,10 +56,7 @@ while True:
             elif 'Привет' in update[0][6]:
                 write_msg(user_id, 'Привет, ' + (user_name[0]['first_name']))
             print(str(user_name[0]['first_name']) + ' ' +
-                str(user_name[0]['last_name']) + ' написал(а) боту - ' + str(update[0][6]))  # msg for us
-
-        if 'Хочу' in update[0][6] and ('оригами' in update[0][6]):
-            write_msg(user_id, 'ок')
+                  str(user_name[0]['last_name']) + ' написал(а) боту - ' + str(update[0][6]))  # msg for us
 
         mark_read(user_id)
     # Меняем ts для следующего запроса
