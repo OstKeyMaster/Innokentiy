@@ -7,5 +7,11 @@ CATEG_LIST = 'Круто!\n' \
              '5.Птицы\n' \
              '6.Коробочки\n'\
              '*Базовые фигуры'
-
 PLANE_LIST = ''
+SHIPS_LIST = ''
+ANIMALS_LIST = ''
+FLOWERS_LIST = ''
+BIRDS_LIST = ''
+BOXES_LIST = ''
+BASE_LIST = ''
+
