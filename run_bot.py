@@ -18,8 +18,8 @@ def write_msg_attach(user_id, text, att_url):
 
 
 def get_photos(album_id):
-    vk_bot.method('photos.get', {'owner_id': -GROUP_ID,
-                                 'album_id': album_id})
+    return vk_bot.method('photos.get', {'owner_id': -GROUP_ID,
+                                        'album_id': album_id})
 
 
 def mark_read(user_id):
