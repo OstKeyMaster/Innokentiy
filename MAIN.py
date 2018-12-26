@@ -2,8 +2,8 @@ import random
 
 import requests
 import vk_api
-from config import *
-from origami import *
+from CONFIG import *
+from ORIGAMI import *
 
 
 def write_msg(user_id, text):
@@ -18,7 +18,7 @@ def write_msg_attach(user_id, text, att_url):
 
 
 def get_photos(album_id):
-    return vk_bot.method('photos.get', {'owner_id': -GROUP_ID,
+    return vk_bot.method('photos.get', {'owner_id': BOT_ID,
                                         'album_id': album_id})
 
 
@@ -28,11 +28,11 @@ def mark_read(user_id):
                                           'start_message_id': st_mes})
 
 
-vk_bot = vk_api.VkApi(token=TOKEN)
+vk_bot = vk_api.VkApi(token=ACCESS_TOKEN)
 long_poll = vk_bot.method('messages.getLongPollServer', {'need_pts': 1, 'lp_version': 3})
 server, key, ts = long_poll['server'], long_poll['key'], long_poll["ts"]
 print("готов к работе" + str(long_poll))
-print(ANIMALS_LIST[1]['20'])
+prev_ts = 0
 while True:
     long_poll = requests.get(
         'https://{server}?act={act}&key={key}&ts={ts}&wait=500'.format(server=server,
@@ -45,20 +45,34 @@ while True:
         print(update)
         user_id = update[0][3]
         usr_txt = update[0][6]
-
+        prev_ts = ts
         if 'Хочу' in usr_txt and 'оригами' in usr_txt:
             write_msg(user_id, CATEG_LIST)
         elif 'животн' in update[0][6].lower() or ('2' in usr_txt and '0' not in usr_txt):  # PLANES
-            write_msg_attach(user_id, ANIMALS_LIST[0], 'photo-174738498_456239048')
+            write_msg_attach(user_id, ANIMALS_LIST[0], 'photo' + str(BOT_ID) + '_' + str(456239026))
 
-        elif '20' in usr_txt:  # send pics from album
-            for i in range(0, 7):
-                photos = get_photos(ANIMALS_LIST[1]['20'])
-                photo = photos['items'][i]['id']
-                write_msg_attach(user_id, '', 'photo-' + GROUP_ID + '_' + str(photo))
+        elif '20' in usr_txt:
+            photos = get_photos('258234980')
+            count = photos['count']  # send pics from album
+            while count - 1 >= 0:
+                n = 0
+                for i in range(5):
+                    photo = photos['items'][n]['id']
+                    write_msg_attach(user_id, '', 'photo' + str(BOT_ID) + '_' + str(photo))
+                    n += 1
+                    count -= 1
+                    if count == 0:
+                        break
+                write_msg(user_id, 'Еще?(Да/Нет)')
+                if 'Да' in usr_txt:
+                    continue
+                elif 'Нет' in usr_txt:
+                    break
+            if count == 0:
+                write_msg(user_id, 'Это всё')
 
         elif 'Кто ты' in usr_txt or 'Ты кто' in usr_txt:
-            group_info = vk_bot.method('groups.getById', {'group_id': GROUP_ID, 'fields': 'name'})
+            group_info = vk_bot.method('groups.getById', {'group_id': BOT_ID, 'fields': 'name'})
             write_msg(user_id, 'Я - ' + group_info[0]['name'] + ', твой друг и товарищ))')  # some features
 
         else:
@@ -71,5 +85,6 @@ while True:
                   str(user_name[0]['last_name']) + ' написал(а) боту - ' + str(usr_txt))  # msg for us
 
         mark_read(user_id)
+
     # Меняем ts для следующего запроса
     ts = long_poll['ts']
